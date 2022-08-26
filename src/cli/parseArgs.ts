@@ -16,13 +16,16 @@ const {
     },
 } = meow(`
     Usage
-        $ foo
+        $ node ./dist/index.js
 
     Options
         -t, --translations  Path to translations file
         -c, --course        Path to template course JSON directory
         -l, --languages     Comma separated list of languages to translate. Must match columns in the translation file.
         -o, --output        Directory to save the translated templates to. Will be created if it doesn't exist.
+
+    Example
+        $ node ./dist/index.js --translations ~/i18n.xlsx --course ~/course-template/ --languages en,es,fr --output ~/course-output/
 `, {
     importMeta: import.meta,
     flags: {
