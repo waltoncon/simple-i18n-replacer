@@ -2,7 +2,7 @@ import renderers from '../renderers';
 import type { Translation } from '../types';
 
 function getTranslation(data: Translation[], id: string, type: string, language: string) {
-    const row = data.find(row => row.id === id);
+    const row = data.find(row => row['!id'] === id);
 
     if (!row) {
         console.warn(`Cannot find translation: ${id}`);

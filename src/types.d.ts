@@ -1,6 +1,5 @@
 export interface Translation {
-    id: string;
-    section: string;
+    '!id': string;
     [key: string]: string;
 }
 
