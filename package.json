@@ -9,7 +9,10 @@
     "dev": "rollup -wc rollup.config.js"
   },
   "keywords": [],
-  "author": "",
+  "author": {
+    "name": "Conor Walton",
+    "url": "https://github.com/waltoncon"
+  },
   "license": "ISC",
   "devDependencies": {
     "@rollup/plugin-typescript": "^8.4.0",
