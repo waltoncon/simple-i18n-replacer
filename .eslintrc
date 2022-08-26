@@ -1,0 +1,6 @@
+{
+    "extends": "@waltoncon",
+    "rules": {
+        "no-console":"off"
+    }
+}
