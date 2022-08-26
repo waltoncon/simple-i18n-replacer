@@ -33,7 +33,7 @@ const {
     },
 });
 
-const languages = rawLanguages.split(',');
+const languages = rawLanguages.split(',').filter(lang => !lang.startsWith('!'));
 const templatePaths = await globby(`${path.resolve(templatePath)}/**/*.json`);
 if (templatePaths.length === 0) abort('Path to template course contains no JSON files');
 
