@@ -8,14 +8,21 @@ import makeDir from 'make-dir';
 import { abort } from '../utils';
 
 const {
-    flags: { translations: translationPath, course: templatePath, languages: rawLanguages, output },
+    flags: {
+        translations: translationPath,
+        course: templatePath,
+        languages: rawLanguages,
+        output: outputDir,
+    },
 } = meow(`
     Usage
         $ foo
 
     Options
-        --translations, -t  Path to translations file
-        --course, -c        Path to template course JSON directory
+        -t, --translations  Path to translations file
+        -c, --course        Path to template course JSON directory
+        -l, --languages     Comma separated list of languages to translate. Must match columns in the translation file.
+        -o, --output        Directory to save the translated templates to. Will be created if it doesn't exist.
 `, {
     importMeta: import.meta,
     flags: {
@@ -30,50 +37,48 @@ const languages = rawLanguages.split(',');
 const templatePaths = await globby(`${path.resolve(templatePath)}/**/*.json`);
 if (templatePaths.length === 0) abort('Path to template course contains no JSON files');
 
-const outputDirExists = await access(output).then(() => true).catch(() => false);
-const outputDirEmpty = await readdir(output).then(files => files.length === 0).catch(() => true);
-
-console.log({ outputDirExists, outputDirEmpty });
+const outputDirExists = await access(outputDir).then(() => true).catch(() => false);
+const outputDirEmpty = await readdir(outputDir).then(files => files.length === 0).catch(() => true);
 
 const { createOutputDir, emptyOutputDir } = await inquirer.prompt([
     {
         type: 'confirm',
         name: 'createOutputDir',
-        message: `${output} doesn't exist. Do you want to create it?`,
+        message: `${outputDir} doesn't exist. Do you want to create it?`,
         when: () => !outputDirExists,
         default: true,
     },
     {
         type: 'confirm',
         name: 'emptyOutputDir',
-        message: chalk.red(`${output} is not empty. Do you want to continue? (The folder will be emptied)`),
+        message: chalk.red(`${outputDir} is not empty. Do you want to continue?`),
         when: () => !outputDirEmpty,
         default: false,
     },
 ]);
 
 if (!outputDirExists && createOutputDir === false) {
-    abort(`${output} doesn't exist`);
+    abort(`${outputDir} doesn't exist`);
 }
 
 if (!outputDirExists && createOutputDir === true) {
-    console.log(`Creating ${output}`);
-    await makeDir(output);
+    console.log(`Creating ${outputDir}`);
+    await makeDir(outputDir);
 }
 
 if (!outputDirEmpty && emptyOutputDir === false) {
     process.exit();
 }
-if (!outputDirEmpty && emptyOutputDir === true) {
-    console.log('EMPTYING OUTPUT DIR');
-}
 
-console.log({ createOutputDir, emptyOutputDir });
+if (!outputDirEmpty && emptyOutputDir === true) {
+    console.log(`Translated content will be added to ${outputDir} and overwrite in-case of conflict`);
+}
 
 export default {
     translationPath,
     templatePath,
     rawLanguages,
+    outputDir,
     languages,
     templatePaths,
     createOutputDir,
