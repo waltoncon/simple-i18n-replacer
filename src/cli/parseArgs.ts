@@ -10,7 +10,7 @@ import { abort } from '../utils';
 const {
     flags: {
         translations: translationPath,
-        course: templatePath,
+        template: templatePath,
         languages: rawLanguages,
         output: outputDir,
     },
@@ -20,17 +20,17 @@ const {
 
     Options
         -t, --translations  Path to translations file
-        -c, --course        Path to template course JSON directory
+        -c, --template        Path to template JSON directory
         -l, --languages     Comma separated list of languages to translate. Must match columns in the translation file.
         -o, --output        Directory to save the translated templates to. Will be created if it doesn't exist.
 
     Example
-        $ node ./dist/index.js --translations ~/i18n.xlsx --course ~/course-template/ --languages en,es,fr --output ~/course-output/
+        $ node ./dist/index.js --translations ~/i18n.xlsx --template ~/template/ --languages en,es,fr --output ~/output/
 `, {
     importMeta: import.meta,
     flags: {
         translations: { type: 'string', alias: 't', isRequired: true },
-        course: { type: 'string', alias: 'c', isRequired: true },
+        template: { type: 'string', alias: 'e', isRequired: true },
         languages: { type: 'string', alias: 'l', isRequired: false, default: 'en' },
         output: { type: 'string', alias: 'o', isRequired: true },
     },
@@ -38,7 +38,7 @@ const {
 
 const languages = rawLanguages.split(',').filter(lang => !lang.startsWith('!'));
 const templatePaths = await globby(`${path.resolve(templatePath)}/**/*.json`);
-if (templatePaths.length === 0) abort('Path to template course contains no JSON files');
+if (templatePaths.length === 0) abort('Template directory contains no JSON files');
 
 const outputDirExists = await access(outputDir).then(() => true).catch(() => false);
 const outputDirEmpty = await readdir(outputDir).then(files => files.length === 0).catch(() => true);
