@@ -5,6 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "build": "rollup -c rollup.config.js",
     "dev": "rollup -wc rollup.config.js"
   },
   "keywords": [],
