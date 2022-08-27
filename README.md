@@ -11,6 +11,8 @@ Create JSON directories based on a template directory and populate with translat
     - [Plain renderer (`plain`)](#plain-renderer-plain)
     - [Markdown renderer (`markdown`, `md`)](#markdown-renderer-markdown-md)
   - [Notes](#notes)
+    - [JSON stringify](#json-stringify)
+    - [Excel formatting](#excel-formatting)
 
 ## Usage
 
@@ -126,6 +128,8 @@ The content is parsed using [markdown-it](https://github.com/markdown-it/markdow
 
 ## Notes
 
+### JSON stringify
+
 The quotes are removed from JSON stringified values so that multiple translation keys can be used in the same JSON value
 
 ```json
@@ -150,3 +154,7 @@ Without removing the quote, the output would be the following (invalid) JSON.
     "title": ""Hello" "Login""
 }
 ```
+
+### Excel formatting
+
+Formatting applied through Excel is lost with this command. If you want to add formatting to content in the `--translations` file you will need to write it with Markdown.
