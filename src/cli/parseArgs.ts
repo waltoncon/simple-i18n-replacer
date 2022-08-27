@@ -10,9 +10,9 @@ import { abort } from '../utils';
 const {
     flags: {
         translations: translationPath,
-        template: templatePath,
+        template: initialTemplatePath,
         languages: rawLanguages,
-        output: outputDir,
+        output: initialOutputDir,
     },
 } = meow(`
     Usage
@@ -36,8 +36,11 @@ const {
     },
 });
 
+const templatePath = path.resolve(initialTemplatePath);
+const outputDir = path.resolve(initialOutputDir);
+
 const languages = rawLanguages.split(',').filter(lang => !lang.startsWith('!'));
-const templatePaths = await globby(`${path.resolve(templatePath)}/**/*.json`);
+const templatePaths = await globby(`${templatePath}/**/*.json`);
 if (templatePaths.length === 0) abort('Template directory contains no JSON files');
 
 const outputDirExists = await access(outputDir).then(() => true).catch(() => false);
@@ -86,4 +89,6 @@ export default {
     templatePaths,
     createOutputDir,
     emptyOutputDir,
+    initialTemplatePath,
+    initialOutputDir,
 };

@@ -1,36 +1,38 @@
-import { readFile } from 'fs/promises';
+import { readFile, writeFile } from 'fs/promises';
+import { dirname } from 'path';
 import chalk from 'chalk';
-import { processFile } from './utils/processXlsx';
-import getTranslation from './utils/getTranslation';
+import makeDir from 'make-dir';
 import cli from './cli/parseArgs';
 import { finderRegex } from './contants';
+import getTranslation from './utils/getTranslation';
+import { processFile } from './utils/processXlsx';
+
 const {
     languages,
+    templatePath,
     templatePaths,
     translationPath,
+    outputDir,
 } = cli;
 
-console.log('from index', cli.translationPath);
 const { data } = await processFile(translationPath);
 
 for (const language of languages) {
     console.log(chalk.blue(`PROCESSING ${language}`));
 
+    const languageOutputDir = `${outputDir}/output_${language}`;
+
     for (const templateFile of templatePaths) {
-        if (!templateFile.includes('unit_000/000_020_textcolumn.json')) {
-            continue;
-        }
-        console.log(templateFile);
+        const newFilePath = templateFile.replace(templatePath, languageOutputDir);
+        const newFileDir = dirname(newFilePath);
 
         const fileContent = await readFile(templateFile, 'utf8');
 
-        const newFileContent = fileContent.replace(finderRegex, (substring, id, type) => {
-            console.log({ substring, id, type });
+        const newFileContent = fileContent.replace(finderRegex, (_, id, type) => {
             return getTranslation(data, id, type, language);
         });
 
-        console.log(newFileContent);
-
-        process.exit();
+        await makeDir(newFileDir);
+        await writeFile(newFilePath, newFileContent, 'utf8');
     }
 }
