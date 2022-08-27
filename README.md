@@ -76,7 +76,7 @@ node ./dist/index.js ---languages en,es,fr,en_US
 
 **Example:**
 
-```json
+```jsonc
 // [--template]/welcome.json
 {
     "url": "https://example.com/page"
@@ -146,7 +146,7 @@ The quotes are removed from JSON stringified values so that multiple translation
 }
 ```
 
-Without removing the quote, the output would be the following (invalid) JSON.
+Without removing the quotes, the output would be the following (invalid) JSON.
 
 ```json
 {
